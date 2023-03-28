@@ -34,10 +34,10 @@ int read_moisture()
 int moisture_percent()
 {
   float reading = read_moisture();
-  float adj1 = reading - MAX_WETNESS;                 // Adjust for max_wetness - så en reading på 300 er = 0
-  float adj2 = - adj1 + MIN_WETNESS_ADJ;              // Adjust for omvendt skala, så 1000 bliver et lavt tal og 300 bliver et højt tal
-  float adj3 = round((adj2 / MIN_WETNESS_ADJ) * 100); // Omregn fra tal til procent
-  int percent = adj3;                                 // Omdan til heltal
+  reading = reading - MAX_WETNESS;                    // Adjust for MAX_WETNESS - so a reading of MAX_WETNESS is = 0
+  reading = - reading + MIN_WETNESS_ADJ;              // Adjust for reversed skala, so a reading of MIN_WETNESS returns 0 and MAX_WETNESS returns 100
+  reading = round((reading / MIN_WETNESS_ADJ) * 100); // Change the returned value to percent
+  int percent = reading;                              // Change type to integer
   return percent;
 }
 
