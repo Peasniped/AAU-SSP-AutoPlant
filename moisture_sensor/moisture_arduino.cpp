@@ -1,6 +1,6 @@
-#define ADC_PIN A0       // Connect to Moisture-module pin A0 to pin A0
-#define PWR_PIN 9        // Connect to Moisture-module pin VCC to pin 9
-                         // Connect to Moisture-module pin GND to pin GND
+#define ADC_PIN A0       // Connect Moisture-module pin A0 to pin A0
+#define PWR_PIN 9        // Connect Moisture-module pin VCC to pin 9
+                         // Connect Moisture-module pin GND to pin GND
 
 #define MAX_WETNESS 300  // The minimum value measurable by the device
 #define MIN_WETNESS 1023 // The maximum value measurable by the device
