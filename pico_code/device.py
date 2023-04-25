@@ -16,6 +16,28 @@ class IO:
         self.input_dry = Pin(0, Pin.IN, Pin.PULL_DOWN)
         self.input_wet = Pin(1, Pin.IN, Pin.PULL_DOWN)
 
+    def check_SIGINT(self) -> bool:
+        if self.input_SIGINT.value() == 1:
+            return True
+        else: return False
+    
+    def check_setting_wetness(self) -> str:
+        if self.input_wet.value() == 1:
+            return "wet"
+        elif self.input_wet.value() == 0 and self.input_dry.value() == 0:
+            return "normal"
+        elif self.input_dry.value() == 1:
+            return "dry"
+        
+    def check_setting_turn_rate(self) -> int:
+        if self.input_2wk.value() == 1:
+            return 2
+        elif self.input_2wk.value() == 0 and self.input_6wk.value() == 0:
+            return 4
+        elif self.input_6wk.value() == 1:
+            return 6  
+
+
 
 class LED(IO):
 
@@ -29,7 +51,7 @@ class LED(IO):
 
         ### COLORS (R,G,B)
         self.white = (255, 255, 255)
-        self.blue = (0, 75, 255)
+        self.blue = (0, 10, 255)
         self.red = (255, 5, 0)
         self.yellow = (255, 125, 0)
         self.orange = (255, 50, 0)
@@ -399,7 +421,7 @@ class Startup:
         
         for i in range(10): # Giver 2 sek under startup til at afbryde startup med SIGINT-knappen
             print(f"Startup interrupt timer: {10-i:02d}")
-            if self.io.input_SIGINT.value() == 1:
+            if self.io.check_SIGINT():
                 self.startup_done = True
                 self.led.trail_stop = True
                 sleep_ms(200)
@@ -445,12 +467,42 @@ class Startup:
         self.startup_done = True
         self.led.trail_stop = True
 
+class Demo:
+
+    def __init__(self) -> None:
+        self.led = LED(led_brightness=40)
+        self.io = IO()
+        pass
+
+    def setting_selection(self) -> None:
+        while not self.io.check_SIGINT():
+            if io.check_setting_wetness() == "wet":
+                color = led.blue
+            elif io.check_setting_wetness() == "normal":
+                color = (0,0,0)
+            elif io.check_setting_wetness() == "dry":
+                color = led.purple
+            
+            if io.check_setting_turn_rate() == 2:
+                color2 = led.green
+            elif io.check_setting_turn_rate() == 4:
+                color2 = (0,0,0)
+            elif io.check_setting_turn_rate() == 6:
+                color2 = led.orange
+            
+            led.led_on_two_colors(color, color2)
+        led.led_off()
+
 
 if __name__ == "__main__":
     led = LED(led_brightness=10)
+    io = IO()
+    demo = Demo()
     _thread.start_new_thread(led.led_rainbow_trail, ())
     sleep_ms(3000)
     led.trail_stop = True
+
+    demo.setting_selection()
 
     #wifi = WiFi()
 
@@ -461,33 +513,3 @@ if __name__ == "__main__":
     #wifi = WiFi()
     #wifi.connect(tries=1, timeout=5)
     #print("Wi-Fi Connected:", wifi.check_connection())
-    
-# Test til at vælge input. Skal indarbejdes i klassen IO() # <----------------------------------------------------------- #TODO
-"""    led = LED()
-    io = IO()
-    print("start", io.input_SYSINT.value())
-
-    color1 = (0,0,0)
-    color2 = (0,0,0)
-
-    while not io.input_SYSINT.value() == 1:
-        #print(io.input_2wk.value(), io.input_6wk.value())
-
-        if io.input_2wk.value() == 1:
-            color1 = led.white
-        elif io.input_6wk.value() == 1:
-            color1 = led.green
-        elif io.input_2wk.value() == 0 and io.input_6wk.value() == 0:
-            color1 = (0,0,0)
-        if io.input_dry.value() == 1:
-            color2 = led.orange
-        elif io.input_wet.value() == 1:
-            color2 = led.blue
-        elif io.input_dry.value() == 0 and io.input_wet.value() == 0:
-            color2 = (0,0,0)
-
-        led.led_on_two_colors(color1, color2)
-
-        #sleep_ms(500)
-    print("interrupted")
-"""
