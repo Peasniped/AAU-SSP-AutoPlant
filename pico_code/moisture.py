@@ -54,3 +54,7 @@ class Moisture:
 
     def flash(self) -> None:
         self.led.led_flash_double()
+
+if __name__ == "__main__":
+    test = Moisture(debug_terminal=True)
+    test.too_dry()
