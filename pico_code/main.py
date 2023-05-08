@@ -4,7 +4,8 @@ import device
 import moisture
 import rotation
 
-UPDATE_INTERVAL = 5 # Update interval in seconds, time paused at the end of the loop
+MINUTES = 60
+UPDATE_INTERVAL = 15 * MINUTES # Update interval in seconds, the time that is paused at the end of the loop
 
 if __name__ == "__main__":
     
