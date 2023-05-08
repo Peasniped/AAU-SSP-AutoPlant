@@ -28,6 +28,7 @@ class IO:
             return "normal"
         elif self.input_dry.value() == 1:
             return "dry"
+        else: return "error"
         
     def check_setting_turn_rate(self) -> int:
         if self.input_2wk.value() == 1:
@@ -36,7 +37,7 @@ class IO:
             return 4
         elif self.input_6wk.value() == 1:
             return 6  
-
+        else: return 0
 
 
 class LED(IO):
@@ -44,10 +45,11 @@ class LED(IO):
     def __init__(self, led_brightness:int = 25) -> None:
         super().__init__()
 
-        self.LED_PIXELS = 40
+        self.LED_PIXELS = 47
         self.LED_BRIGHTNESS = led_brightness # Sættes ved instantiering af objektet - Værdi mellem 1 og 100, hvor 100 er mest lys og 1 er næsten ingen lys
 
         self.led_strip = NeoPixel(Pin(16), self.LED_PIXELS)
+        self.trail_stop = False
 
         ### COLORS (R,G,B)
         self.white = (255, 255, 255)
@@ -58,8 +60,7 @@ class LED(IO):
         self.green = (0, 255, 5)
         self.purple = (75, 0, 120)
 
-        self.wave_stop = False
-        self.trail_stop = False
+
 
     def hue_to_rgb(self, angle:int) -> tuple:
             # Inspiration: Ontaelio(2016?) https://www.instructables.com/How-to-Make-Proper-Rainbow-and-Random-Colors-With-/
@@ -99,33 +100,6 @@ class LED(IO):
             self.led_strip[i] = (0, 0, 0)
         self.led_strip.write()
 
-    def led_on_two_colors(self, color1:tuple, color2:tuple = (0,0,0)) -> None:
-        LED_R1 = int((color1[0] / 100) * self.LED_BRIGHTNESS)
-        LED_G1 = int((color1[1] / 100) * self.LED_BRIGHTNESS)
-        LED_B1 = int((color1[2] / 100) * self.LED_BRIGHTNESS)
-
-        LED_R2 = int((color2[0] / 100) * self.LED_BRIGHTNESS)
-        LED_G2 = int((color2[1] / 100) * self.LED_BRIGHTNESS)
-        LED_B2 = int((color2[2] / 100) * self.LED_BRIGHTNESS)
-
-        for i in range(self.LED_PIXELS):
-            if not i % 2 == 0:
-                self.led_strip[i] = (LED_R1, LED_G1, LED_B1)
-            else:
-                self.led_strip[i] = (LED_R2, LED_G2, LED_B2)
-        self.led_strip.write()
-
-    def led_flash(self, flashes:int = 1, on_time_ms:int = 350, off_time_ms:int = 150, color:tuple = (0,0,0)) -> None:
-        if color == (0,0,0):
-            color = self.blue
-        for i in range(flashes):
-            self.led_on(color)
-            sleep_ms(on_time_ms)
-            self.led_off()
-            if not i + 1 == flashes:
-                sleep_ms(off_time_ms)
-            
-
     def led_flash_double(self, flashes:int = 1, on_time_ms:int = 50, delay_time_ms:int = 75, off_time_ms:int = 2000, color:tuple = (0,0,0)) -> None:
         if color == (0,0,0):
             color = self.blue
@@ -140,15 +114,8 @@ class LED(IO):
             if not i + 1 == flashes:
                 sleep_ms(off_time_ms)
 
-    def led_color_cycle(self, cycles:int = 1, on_time_ms:int = 250) -> None:
-        colors = [self.red, self.green, self. yellow, self.blue, self.orange, self. purple]
-        for i in range(cycles):
-            for color in colors:
-                self.led_on(color)
-                sleep_ms(on_time_ms)
-        self.led_off()
-
-    def led_rainbow_trail(self, interval:int = 20, trail_length:int = 25) -> None:
+    def led_rainbow_trail(self, interval:int = 20, trail_length:int = 25, seconds:int = 0) -> None:
+        stopwatch = Stopwatch()
         self.trail_stop = False
         angle = 1
         led = 0
@@ -171,23 +138,9 @@ class LED(IO):
                 direction = 1
             angle += 1 * direction
             sleep_ms(interval)
+            if stopwatch.get_time() >= seconds and seconds > 0: break
+        self.trail_stop = True
         self.led_off()        
-
-    def led_color_wave(self, step:int = 1) -> None:
-        self.wave_stop = False
-        angle = 0
-        direction = 1
-        while self.wave_stop == False:
-            color = self.hue_to_rgb(angle)
-            self.led_on(color)
-            angle += step * direction
-            if angle >= 255:
-                direction = -1
-            elif angle <= 0:
-                direction = 1
-            print(angle)
-        self.led_off()
-
 
 class Time:
 
@@ -293,7 +246,7 @@ class Time:
     def format_time(self, time_tuple:tuple) -> str:
         time = f"{time_tuple[0]}-{time_tuple[1]:02d}-{time_tuple[2]:02d} {time_tuple[3]:02d}:{time_tuple[4]:02d}:{time_tuple[5]:02d}"
         return time
-    
+
 
 class Stopwatch:
     
@@ -306,26 +259,13 @@ class Stopwatch:
         time = mktime(localtime())
         delta = time - start
         return delta
-    
-    def lap(self) -> None:
-        time = self.get_time()
-        self.lap_times.append(time)
-
-    def last_lap(self) -> int:
-        last_lap = self.lap_times[-1]
-        return last_lap    
-
-    def time_delta_last_lap(self) -> int:
-        time = self.get_time()
-        last_lap = self.last_lap()
-        return time - last_lap
 
 
 class WiFi:
     
     def __init__(self) -> None:
-        self.default_ssid = "some_ssid" # <------------------------------------------------------------------------------ Default Wi-Fi SSID sættes her
-        self.default_pass = "some_pass" # <------------------------------------------------------------------------------ Default Wi-Fi pass sættes her
+        self.default_ssid = "M&M" # <------------------------------------------------------------------------------ Default Wi-Fi SSID sættes her
+        self.default_pass = "69MarLene" # <------------------------------------------------------------------------------ Default Wi-Fi pass sættes her
         self.wlan = WLAN(STA_IF)
         pass
 
@@ -359,8 +299,6 @@ class WiFi:
     def disconnect(self):
         self.wlan.active(False)
 
-    # <------------------------------------------------------- #TODO metode der pinger internet for at se om der er hul igennem
-        
     # <------------------------------------------------------------------------------------------------------------------ #TODO        
     # Metode der lav WiFi-hotspot som man kan connecte til
     # Når man connecter bliver man redirectet til en side i browser (ala net.aau.dk og alle andre pay-to-access-wifi)
@@ -386,13 +324,11 @@ class Files:
                 if kv == "None:None":
                     pass
                 else:
-                    #print(f"kv = {kv}") # <------------------------------------------------------------------------------- #DEBUG
                     key, value = kv.split(":")
                     settings_dict[key] = value
             file.close()
             return settings_dict
         except Exception as e:
-            print(f"some failure happened - {e}")# <----------------------------------------------------------------------- #DEBUG
             file = open(self.SETTINGS_FILE,"w")
             file.close()
             return {None:None}
@@ -417,15 +353,13 @@ class Startup:
         self.wifi = WiFi()
         self.files = Files()
         self.time = Time()
-        
-        # Laver fancy lys imens systemet starter op
-        _thread.start_new_thread(self.wait_for_startup, ())
+            
+        _thread.start_new_thread(self.wait_for_startup, ()) # Laver fancy lys imens systemet starter op
         
         for i in range(10): # Giver 2 sek under startup til at afbryde startup med SIGINT-knappen
             print(f"Startup interrupt timer: {10-i:02d}")
             if self.io.check_SIGINT():
-                self.startup_done = True
-                self.led.trail_stop = True
+                self.kill_lights()
                 sleep_ms(200)
                 self.led.LED_BRIGHTNESS = 10
                 self.led.led_on(self.led.red)
@@ -433,11 +367,10 @@ class Startup:
                 return
             sleep_ms(200)
 
-        # Starter startup-sekvensen og holder øje med fejl
-        try:
+        try: # Starter startup-sekvensen og holder øje med fejl
             self.startup_seq()
         except WiFiError as e:
-            self.startup_done = True
+            self.kill_lights()
             print(e, "\nRestarting device")
             self.led.led_flash_double(4, color=self.led.red)
             # Device reset
@@ -446,11 +379,14 @@ class Startup:
             print("something something")
             self.startup_done = True
 
+    def kill_lights(self) -> None:
+        self.led.trail_stop = True
+        self.startup_done = True
+
     def wait_for_startup(self):
         while not self.startup_done:
             self.led.led_rainbow_trail()
          
-
     def startup_seq(self):
         settings = self.files.read_settings()
         try:
@@ -465,53 +401,7 @@ class Startup:
         
         time = self.time.time_now()[0]
         self.time.set_RTC(time)
-
-        self.startup_done = True
-        self.led.trail_stop = True
-
-class Demo:
-
-    def __init__(self) -> None:
-        self.led = LED(led_brightness=40)
-        self.io = IO()
-        pass
-
-    def setting_selection(self) -> None:
-        while not self.io.check_SIGINT():
-            if io.check_setting_wetness() == "wet":
-                color = led.blue
-            elif io.check_setting_wetness() == "normal":
-                color = (0,0,0)
-            elif io.check_setting_wetness() == "dry":
-                color = led.purple
-            
-            if io.check_setting_turn_rate() == 2:
-                color2 = led.green
-            elif io.check_setting_turn_rate() == 4:
-                color2 = (0,0,0)
-            elif io.check_setting_turn_rate() == 6:
-                color2 = led.orange
-            
-            led.led_on_two_colors(color, color2)
-        led.led_off()
-
+        self.kill_lights()
 
 if __name__ == "__main__":
     led = LED(led_brightness=10)
-    io = IO()
-    demo = Demo()
-    _thread.start_new_thread(led.led_rainbow_trail, ())
-    sleep_ms(3000)
-    led.trail_stop = True
-
-    demo.setting_selection()
-
-    #wifi = WiFi()
-
-    #startup = Startup()
-    #sleep_ms(3000)
-    #led.led_flash(color=led.green)
-
-    #wifi = WiFi()
-    #wifi.connect(tries=1, timeout=5)
-    #print("Wi-Fi Connected:", wifi.check_connection())
