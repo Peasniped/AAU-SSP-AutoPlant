@@ -17,7 +17,7 @@ class Moisture:
         self.sensor_data = ADC(Pin(data_pin))
 
         self.io = IO()
-        self.led = LED()
+        self.led = LED(led_brightness=100)
 
     def read_moisture(self) -> int:
         self.sensor_power.on()
