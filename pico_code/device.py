@@ -92,7 +92,7 @@ class LED(IO):
             self.led_strip[i] = (0, 0, 0)
         self.led_strip.write()
 
-    def led_flash_double(self, flashes:int = 1, on_time_ms:int = 50, delay_time_ms:int = 75, off_time_ms:int = 2000, color:tuple = (0,0,0)) -> None:
+    def led_flash_double(self, flashes:int = 1, on_time_ms:int = 60, delay_time_ms:int = 75, off_time_ms:int = 1500, color:tuple = (0,0,0)) -> None:
         if color == (0,0,0):
             color = self.blue
         for i in range(flashes):
