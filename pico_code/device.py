@@ -359,6 +359,8 @@ class WiFi:
     def disconnect(self):
         self.wlan.active(False)
 
+    # <------------------------------------------------------- #TODO metode der pinger internet for at se om der er hul igennem
+        
     # <------------------------------------------------------------------------------------------------------------------ #TODO        
     # Metode der lav WiFi-hotspot som man kan connecte til
     # Når man connecter bliver man redirectet til en side i browser (ala net.aau.dk og alle andre pay-to-access-wifi)
