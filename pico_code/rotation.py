@@ -24,8 +24,8 @@ class Rotation:
         self.files.write_settings({"next_rotation":time})
     
     def pseudo_rotate(self):
-        if self.debug_terminal: print("rotating for 5 seconds") # <------------------------------------------------------------------------- #DEBUG
-        self.led.led_rainbow_trail(seconds=5)
+        if self.debug_terminal: print("rotating for 10 seconds") # <------------------------------------------------------------------------ #DEBUG
+        self.led.led_rainbow_trail(interval=100, trail_length=5, seconds=10, colors=self.led.red)
         if self.debug_terminal: print("rotation done") # <---------------------------------------------------------------------------------- #DEBUG
     
     def rotate(self) -> None:
@@ -37,7 +37,9 @@ class Rotation:
 
         try: # Der er gemt en next_rotation
             next_rotation = int(settings_dict["next_rotation"])
-        except KeyError as e: # Der er IKKE gemt en next_rotation
+        except KeyError: # Der er IKKE gemt en next_rotation
+            next_rotation = None
+        except ValueError:
             next_rotation = None
 
         if next_rotation == None or current_unixtime > next_rotation:
@@ -52,7 +54,7 @@ class Rotation:
             if self.debug_terminal: print("Not time to rotate: next rotation time is:", self.time.format_time(gmtime(next_rotation))) # <--- #DEBUG
             return False  
     
-
 if __name__ == "__main__":
-    test = Rotation()
-    print("Is it time to rotate?:", test.is_time_to_rotate())
+    test = Rotation(debug_terminal=True)
+    test.is_time_to_rotate()
+    test.rotate()
