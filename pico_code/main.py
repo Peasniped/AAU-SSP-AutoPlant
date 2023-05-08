@@ -1,16 +1,17 @@
 # Her sker der ikke noget endnu ):
+from time import sleep
 import device
 import moisture
 import rotation
 
+UPDATE_INTERVAL = 5 # Update interval in seconds, time paused at the end of the loop
+
 if __name__ == "__main__":
-    def pseudo_rotate():
-        startup.led.led_rainbow_trail(seconds=5)
-        print("rotation done")
     
     startup = device.Startup()
     print("startup done")
     moisture = moisture.Moisture()
+    rotation = rotation.Rotation()
 
     while True:
         # Moisture
@@ -18,5 +19,7 @@ if __name__ == "__main__":
             moisture.flash()
 
         #Rotation
-        if rotation.time_to_rotate():
-            pseudo_rotate()
+        if rotation.is_time_to_rotate():
+            rotation.rotate()
+
+        sleep(UPDATE_INTERVAL)
