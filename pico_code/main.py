@@ -21,5 +21,6 @@ if __name__ == "__main__":
         #Rotation
         if rotation.is_time_to_rotate():
             rotation.rotate()
-
+        
+        print()
         sleep(UPDATE_INTERVAL)
