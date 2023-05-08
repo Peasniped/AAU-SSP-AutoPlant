@@ -4,10 +4,12 @@ from device import IO, LED
 
 class Moisture:
 
-    def __init__(self, power_pin:int = 27, data_pin:int = 26) -> None:    
+    def __init__(self, power_pin:int = 27, data_pin:int = 26, debug_terminal:bool = False) -> None:    
         self.MAX_VALUE = 65535 # ADC er 16 bits, så maxværdi er 65535
         self.MIN_VALUE = 17900 # 17900 er en potte der er lettere overvandet
         self.MIN_VALUE_ADJUSTED = self.MAX_VALUE - self.MIN_VALUE
+        
+        self.debug_terminal = debug_terminal
 
         self.too_dry_threshold_dry = 40 
         self.too_dry_threshold_normal = 55
@@ -24,7 +26,7 @@ class Moisture:
         sleep_ms(25)
         value = int(self.sensor_data.read_u16())
         self.sensor_power.off()
-        print(f"Moisture Value: {value}") #DEBUG
+        if self.debug_terminal: print(f"Moisture Value: {value}") # <-------------------------------- #DEBUG
         return value
     
     def moisture_percent(self) -> int:
@@ -32,7 +34,7 @@ class Moisture:
         reading -= self.MIN_VALUE
         reading = - reading + self.MIN_VALUE_ADJUSTED
         percent = int(round((reading / self.MIN_VALUE_ADJUSTED) * 100))
-        print(f"Moisture Percent: {percent}%") #DEBUG
+        if self.debug_terminal: print(f"Moisture Percent: {percent}%") # <---------------------------- DEBUG
         return percent
     
     def get_threshold(self) -> int:
