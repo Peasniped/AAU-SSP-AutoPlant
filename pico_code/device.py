@@ -106,14 +106,16 @@ class LED(IO):
             if not i + 1 == flashes:
                 sleep_ms(off_time_ms)
 
-    def led_rainbow_trail(self, interval:int = 20, trail_length:int = 25, seconds:int = 0) -> None:
+    def led_rainbow_trail(self, interval:int = 20, trail_length:int = 25, seconds:int = 0, colors:tuple = ("rainbow","rainbow","rainbow")) -> None:
         stopwatch = Stopwatch()
         self.trail_stop = False
         angle = 1
         led = 0
         direction = 1
         while self.trail_stop == False:
-            color = self.hue_to_rgb(angle)
+            if colors == ("rainbow","rainbow","rainbow"):
+                color = self.hue_to_rgb(angle)
+            else: color = colors
             self.led_on_single(led, color, False)
             if trail_length <= led:
                 off_led = led - trail_length
@@ -148,13 +150,13 @@ class Time:
         # https://stackoverflow.com/a/33436061
         sockaddr = getaddrinfo(host, port)[0][-1]
         sock = socket(AF_INET, SOCK_DGRAM)
-        sock.settimeout(1.0)
+        sock.settimeout(.0)
         msg = None
         while msg == None: # <------------------------------------------------------------------------------------------- #TODO - Noget med at den skal time ud efter et minut
         
             try: 
                 sock.sendto(self.NTP_QUERY, sockaddr)
-                print("NTP query sent - waiting 1s for response") # <---------------------------------------------------- #DEBUG
+                print("NTP query sent - waiting 2s for response") # <---------------------------------------------------- #DEBUG
                 msg, address = sock.recvfrom(1024)
             except OSError:
                 print("Timeout waiting for UDP-package!") # <------------------------------------------------------------ #DEBUG
@@ -396,4 +398,4 @@ class Startup:
         self.kill_lights()
 
 if __name__ == "__main__":
-    led = LED(led_brightness=10)
+    pass
