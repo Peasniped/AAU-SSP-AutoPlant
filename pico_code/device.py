@@ -47,20 +47,10 @@ class LED(IO):
 
         self.LED_PIXELS = 47
         self.LED_BRIGHTNESS = led_brightness # Sættes ved instantiering af objektet - Værdi mellem 1 og 100, hvor 100 er mest lys og 1 er næsten ingen lys
-
         self.led_strip = NeoPixel(Pin(16), self.LED_PIXELS)
         self.trail_stop = False
 
-        ### COLORS (R,G,B)
-        self.white = (255, 255, 255)
         self.blue = (0, 10, 255)
-        self.red = (255, 5, 0)
-        self.yellow = (255, 125, 0)
-        self.orange = (255, 50, 0)
-        self.green = (0, 255, 5)
-        self.purple = (75, 0, 120)
-
-
 
     def hue_to_rgb(self, angle:int) -> tuple:
             # Inspiration: Ontaelio(2016?) https://www.instructables.com/How-to-Make-Proper-Rainbow-and-Random-Colors-With-/
