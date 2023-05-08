@@ -50,7 +50,9 @@ class LED(IO):
         self.led_strip = NeoPixel(Pin(16), self.LED_PIXELS)
         self.trail_stop = False
 
+        # Colors
         self.blue = (0, 10, 255)
+        self.red = (255, 5, 0)
 
     def hue_to_rgb(self, angle:int) -> tuple:
             # Inspiration: Ontaelio(2016?) https://www.instructables.com/How-to-Make-Proper-Rainbow-and-Random-Colors-With-/
