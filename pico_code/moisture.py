@@ -23,9 +23,9 @@ class Moisture(Sensor):
         
         self.debug_terminal = debug_terminal
 
-        self.too_dry_threshold_dry = 40 
-        self.too_dry_threshold_normal = 55
-        self.too_dry_threshold_wet = 70
+        self.too_dry_threshold_dry = 30 
+        self.too_dry_threshold_normal = 40
+        self.too_dry_threshold_wet = 50
 
 
     def read_moisture(self) -> int:
@@ -33,7 +33,7 @@ class Moisture(Sensor):
         sleep_ms(25)
         value = int(self.sensor_data.read_u16())
     #    self.sensor_power.off()
-        if self.debug_terminal: print(f"Moisture Value: {value}") # <-------------------------------- #DEBUG
+        if self.debug_terminal: print(f"Moisture Value: {value}") # <----------------------------------- #DEBUG
         return value
     
     def moisture_percent(self) -> int:
@@ -41,7 +41,7 @@ class Moisture(Sensor):
         reading -= self.MIN_VALUE
         reading = - reading + self.MIN_VALUE_ADJUSTED
         percent = int(round((reading / self.MIN_VALUE_ADJUSTED) * 100))
-        if self.debug_terminal: print(f"Moisture Percent: {percent}%") # <---------------------------- DEBUG
+        if self.debug_terminal: print(f"Moisture Percent: {percent}%") # <---------------------------- #DEBUG
         return percent
     
     def get_threshold(self) -> int:
@@ -52,10 +52,14 @@ class Moisture(Sensor):
             threshold = self.too_dry_threshold_normal
         else:
             threshold = self.too_dry_threshold_wet
+        if self.debug_terminal: print(f"Moisture Setting: {dryness_setting}") # <--------------------- #DEBUG
         return threshold
     
     def too_dry(self) -> bool:
-        if self.moisture_percent() < self.get_threshold():
+        moisture = self.moisture_percent()
+        threshold = self.get_threshold()
+        if self.debug_terminal: print(f"Moisture: {moisture}%, Threshold: {threshold}%\n") # <--------------------- #DEBUG
+        if moisture < threshold:
             return True
         else: return False
 
@@ -64,4 +68,7 @@ class Moisture(Sensor):
 
 if __name__ == "__main__":
     test = Moisture(debug_terminal=True)
-    test.too_dry()
+    while True:
+        if test.too_dry():
+            test.flash()
+        sleep_ms(1000)
