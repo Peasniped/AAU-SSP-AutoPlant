@@ -1,4 +1,4 @@
-from machine import PWM, Pin
+from machine import Pin
 from time import mktime, localtime, gmtime, sleep
 from device import Microcontroller, LED_Strip, Time, Files
 
@@ -90,10 +90,8 @@ class Step_Motor(Motor):
             position = 0
         return position
 
-
     def stepper_rotate(self, steps:int, time:float, direction:int = 1) -> None:
         delay = time / steps
-        print(delay)
         if direction == 1:
             SEQUENCE = [[1, 0, 0, 1],
                         [1, 0, 0, 0],
@@ -120,7 +118,7 @@ class Step_Motor(Motor):
                 self.stepper_in3.value(SEQUENCE[step][2])
                 self.stepper_in4.value(SEQUENCE[step][3])
                 sleep(delay)
-
+        print(f"Motor turning\n") # <------------------------------------------------------------------------------------------------------- #DEBUG
         self.stepper_in1.value(0)
         self.stepper_in2.value(0)
         self.stepper_in3.value(0)
