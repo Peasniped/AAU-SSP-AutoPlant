@@ -258,10 +258,9 @@ class Stopwatch:
 class WiFi:
     
     def __init__(self) -> None:
-        self.default_ssid = "M&M" # <------------------------------------------------------------------------------ Default Wi-Fi SSID sættes her
-        self.default_pass = "69MarLene" # <------------------------------------------------------------------------------ Default Wi-Fi pass sættes her
+        self.default_ssid = "INSERT_YOUR_SSID_HERE" # <------------------------------------------------------------------------------ Default Wi-Fi SSID sættes her
+        self.default_pass = "12345678" # <------------------------------------------------------------------------------------------- Default Wi-Fi pass sættes her
         self.wlan = WLAN(STA_IF)
-        pass
 
     def connect(self, ssid:str = "", password:str = "", timeout:int = 5, tries:int = 3) -> None:
         for i in range(tries):
