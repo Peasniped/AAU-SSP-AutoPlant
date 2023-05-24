@@ -67,9 +67,11 @@ class Step_Motor(Motor):
         if self.position < 6:
             self.stepper_rotate(250, 0.5)
             self.position += 1
+            self.save_position(self.position)
         else: 
             self.rotate_return()
             self.position = 0
+            self.save_position(self.position)
 
     def rotate_return(self) -> None:
         steps = 250 * 6
