@@ -8,13 +8,13 @@ from os import listdir
 import _thread
 from custom_exceptions import *
 
-class IO:
+class Microcontroller:
     def __init__(self) -> None:
-        self.input_SIGINT = Pin(15, Pin.IN, Pin.PULL_DOWN)
-        self.input_2wk = Pin(13, Pin.IN, Pin.PULL_DOWN)
-        self.input_6wk = Pin(14, Pin.IN, Pin.PULL_DOWN)
-        self.input_dry = Pin(0, Pin.IN, Pin.PULL_DOWN)
-        self.input_wet = Pin(1, Pin.IN, Pin.PULL_DOWN)
+        self.input_SIGINT = Pin(1, Pin.IN, Pin.PULL_DOWN)
+        self.input_2wk = Pin(28, Pin.IN, Pin.PULL_DOWN)
+        self.input_6wk = Pin(27, Pin.IN, Pin.PULL_DOWN)
+        self.input_dry = Pin(16, Pin.IN, Pin.PULL_DOWN)
+        self.input_wet = Pin(22, Pin.IN, Pin.PULL_DOWN)
 
     def check_SIGINT(self) -> bool:
         if self.input_SIGINT.value() == 1:
@@ -40,19 +40,19 @@ class IO:
         else: return 0
 
 
-class LED(IO):
+class LED_Strip():
 
     def __init__(self, led_brightness:int = 25) -> None:
-        super().__init__()
 
         self.LED_PIXELS = 47
         self.LED_BRIGHTNESS = led_brightness # Sættes ved instantiering af objektet - Værdi mellem 1 og 100, hvor 100 er mest lys og 1 er næsten ingen lys
-        self.led_strip = NeoPixel(Pin(16), self.LED_PIXELS)
+        self.led_strip = NeoPixel(Pin(17), self.LED_PIXELS)
         self.trail_stop = False
 
         # Colors
-        self.blue = (0, 10, 255)
         self.red = (255, 5, 0)
+        self.green = (0,255, 5)
+        self.blue = (0, 10, 255)
 
     def hue_to_rgb(self, angle:int) -> tuple:
             # Inspiration: Ontaelio(2016?) https://www.instructables.com/How-to-Make-Proper-Rainbow-and-Random-Colors-With-/
@@ -342,8 +342,8 @@ class Startup:
 
     def __init__(self) -> None:
         self.startup_done = False
-        self.led = LED(25)
-        self.io = IO()
+        self.led = LED_Strip(25)
+        self.io = Microcontroller()
         self.wifi = WiFi()
         self.files = Files()
         self.time = Time()
@@ -358,7 +358,7 @@ class Startup:
                 self.led.LED_BRIGHTNESS = 10
                 self.led.led_on(self.led.red)
                 print("Startup interrupted using SIGINT!")
-                return
+                return None
             sleep_ms(200)
 
         try: # Starter startup-sekvensen og holder øje med fejl
@@ -398,4 +398,4 @@ class Startup:
         self.kill_lights()
 
 if __name__ == "__main__":
-    pass
+    led = LED_Strip(led_brightness=10)

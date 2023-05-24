@@ -5,14 +5,14 @@ import moisture
 import rotation
 
 MINUTES = 60
-UPDATE_INTERVAL = 15 * MINUTES # Update interval in seconds, the time that is paused at the end of the loop
+UPDATE_INTERVAL = 10 #* MINUTES # Update interval in seconds, the time that is paused at the end of the loop
 
 if __name__ == "__main__":
     
     startup = device.Startup()
     print("startup done")
     moisture = moisture.Moisture()
-    rotation = rotation.Rotation()
+    rotation = rotation.Step_Motor()
 
     while True:
         # Moisture
@@ -23,5 +23,5 @@ if __name__ == "__main__":
         if rotation.is_time_to_rotate():
             rotation.rotate()
         
-        print()
+        print("sleeping for", UPDATE_INTERVAL, "seconds")
         sleep(UPDATE_INTERVAL)

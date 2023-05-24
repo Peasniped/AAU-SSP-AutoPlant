@@ -1,7 +1,7 @@
-class TestError(Exception):
-    "Raised when the exception is of type 'Test'"
+class CustomError(Exception):
+    "Raised when the exception is of type CustomError"
     def __init__(self) -> None:
-        super().__init__("This is an exception test")
+        super().__init__("This is a custom exception")
 
 class WiFiError(Exception):
     "Raised when something is wrong with the wifi-connection"

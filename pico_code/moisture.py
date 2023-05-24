@@ -1,13 +1,25 @@
 from machine import ADC, Pin
 from time import sleep_ms
-from device import IO, LED
+from device import Microcontroller, LED_Strip
 
-class Moisture:
+class Sensor:
+    def __init__(self, power_pin:int = 27, data_pin:int = 26, debug_terminal:bool = False) -> None:
+        self.ADC_MAX_VALUE = 65535 # ADC er 16 bits, så maxværdi er 65535
+        
+        self.io = Microcontroller()
+        self.led = LED_Strip()
 
-    def __init__(self, power_pin:int = 27, data_pin:int = 26, debug_terminal:bool = False) -> None:    
-        self.MAX_VALUE = 65535 # ADC er 16 bits, så maxværdi er 65535
+    #    self.sensor_power = Pin(power_pin, Pin.OUT)
+        self.sensor_data = ADC(Pin(data_pin))
+        
+
+class Moisture(Sensor):
+
+    def __init__(self, power_pin: int = 27, data_pin: int = 26, debug_terminal: bool = False) -> None:
+        super().__init__(power_pin, data_pin, debug_terminal)
+        
         self.MIN_VALUE = 17900 # 17900 er en potte der er lettere overvandet
-        self.MIN_VALUE_ADJUSTED = self.MAX_VALUE - self.MIN_VALUE
+        self.MIN_VALUE_ADJUSTED = self.ADC_MAX_VALUE - self.MIN_VALUE
         
         self.debug_terminal = debug_terminal
 
@@ -15,17 +27,12 @@ class Moisture:
         self.too_dry_threshold_normal = 55
         self.too_dry_threshold_wet = 70
 
-        self.sensor_power = Pin(power_pin, Pin.OUT)
-        self.sensor_data = ADC(Pin(data_pin))
-
-        self.io = IO()
-        self.led = LED(led_brightness=100)
 
     def read_moisture(self) -> int:
-        self.sensor_power.on()
+    #    self.sensor_power.on()
         sleep_ms(25)
         value = int(self.sensor_data.read_u16())
-        self.sensor_power.off()
+    #    self.sensor_power.off()
         if self.debug_terminal: print(f"Moisture Value: {value}") # <-------------------------------- #DEBUG
         return value
     
