@@ -25,7 +25,7 @@ class Moisture(Sensor):
 
         self.too_dry_threshold_dry = 30 
         self.too_dry_threshold_normal = 40
-        self.too_dry_threshold_wet = 50
+        self.too_dry_threshold_wet = 99 # 50
 
 
     def read_moisture(self) -> int:
@@ -64,6 +64,8 @@ class Moisture(Sensor):
         else: return False
 
     def flash(self) -> None:
+        self.led.led_off()
+        sleep_ms(20)
         self.led.led_flash_double()
 
 if __name__ == "__main__":

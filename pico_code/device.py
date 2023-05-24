@@ -10,11 +10,11 @@ from custom_exceptions import *
 
 class Microcontroller:
     def __init__(self) -> None:
-        self.input_SIGINT = Pin(1, Pin.IN, Pin.PULL_DOWN)
-        self.input_2wk = Pin(28, Pin.IN, Pin.PULL_DOWN)
-        self.input_6wk = Pin(27, Pin.IN, Pin.PULL_DOWN)
-        self.input_dry = Pin(16, Pin.IN, Pin.PULL_DOWN)
-        self.input_wet = Pin(22, Pin.IN, Pin.PULL_DOWN)
+        self.input_SIGINT = Pin(0, Pin.IN, Pin.PULL_DOWN)
+        self.input_2wk = Pin(27, Pin.IN, Pin.PULL_DOWN)
+        self.input_6wk = Pin(28, Pin.IN, Pin.PULL_DOWN)
+        self.input_dry = Pin(22, Pin.IN, Pin.PULL_DOWN)
+        self.input_wet = Pin(16, Pin.IN, Pin.PULL_DOWN)
 
     def check_SIGINT(self) -> bool:
         if self.input_SIGINT.value() == 1:
@@ -150,7 +150,7 @@ class Time:
         # https://stackoverflow.com/a/33436061
         sockaddr = getaddrinfo(host, port)[0][-1]
         sock = socket(AF_INET, SOCK_DGRAM)
-        sock.settimeout(.0)
+        sock.settimeout(2.0)
         msg = None
         while msg == None: # <------------------------------------------------------------------------------------------- #TODO - Noget med at den skal time ud efter et minut
         
@@ -342,6 +342,7 @@ class Startup:
 
     def __init__(self) -> None:
         self.startup_done = False
+        self.startup_aborted = False
         self.led = LED_Strip(25)
         self.io = Microcontroller()
         self.wifi = WiFi()
@@ -357,6 +358,7 @@ class Startup:
                 sleep_ms(200)
                 self.led.LED_BRIGHTNESS = 10
                 self.led.led_on(self.led.red)
+                self.startup_aborted = True
                 print("Startup interrupted using SIGINT!")
                 return None
             sleep_ms(200)
@@ -398,4 +400,7 @@ class Startup:
         self.kill_lights()
 
 if __name__ == "__main__":
-    led = LED_Strip(led_brightness=10)
+    io = Microcontroller()
+    print(io.check_setting_turn_rate())
+    print(io.check_setting_wetness())
+    pass
