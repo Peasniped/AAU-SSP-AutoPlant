@@ -4,6 +4,19 @@ from neopixel import NeoPixel
 import _thread
 
 class Microcontroller:
+    """
+    Initialzes the Microcontroller object with relevant inputs.
+
+    Args:
+        self.input_reset : Button to restart product if.  
+        self.input_2wk : Sets the product to rotate every 2 weeks.
+        self.input_6wk : Sets the product to rotate every 6 weeks.
+        self.input_dry : Sets soil preference to dry.        
+        self.input_wet : Sets wet preference to wet.
+
+    Returns:
+        None.
+    """
     def __init__(self) -> None:
         self.input_reset = Pin(0, Pin.IN, Pin.PULL_DOWN)
         self.input_2wk = Pin(27, Pin.IN, Pin.PULL_DOWN)
@@ -12,27 +25,56 @@ class Microcontroller:
         self.input_wet = Pin(16, Pin.IN, Pin.PULL_DOWN)
 
     def check_reset(self) -> bool:
+        """
+        Checks if the product should be reset.
+
+        Returns:
+            True or False.
+        """
         if self.input_reset.value() == 1:
             return True
-        else: return False
+        else: 
+            return False
     
     def check_setting_wetness(self) -> str:
+        """
+        Checks the moisture setting determined by a physical switch set by user.
+
+        Args:
+            self.input_wet : Wet setting on switch.
+            self.input_dry : Dry setting on switch.
+
+        Returns:
+            String
+        """
         if self.input_wet.value() == 1:
             return "wet"
         elif self.input_wet.value() == 0 and self.input_dry.value() == 0:
             return "normal"
         elif self.input_dry.value() == 1:
             return "dry"
-        else: return "error"
+        else: 
+            return "error"
         
     def check_setting_turn_rate(self) -> int:
+        """
+        Checks the rotation setting determined by a physical switch set by user.
+
+        Args:
+            input_2wk : 2 week rotation setting on switch.
+            input_6wk : 6 week rotation setting on switch.
+
+        Returns:
+            Int
+        """
         if self.input_2wk.value() == 1:
             return 2
         elif self.input_2wk.value() == 0 and self.input_6wk.value() == 0:
             return 4
         elif self.input_6wk.value() == 1:
             return 6  
-        else: return 0
+        else: 
+            return 0
 
 class LED_Strip():
     def __init__(self, led_brightness:int = 25) -> None:
