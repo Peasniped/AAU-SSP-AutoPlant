@@ -1,18 +1,18 @@
 
 # AAU-SSP-AutoPlant
-This project consists of four Python modules: 'main.py', 'device.py', 'moisture.py', and 'rotation.py'. These modules are used to control a device that monitors moisture levels and rotates a motor at specified intervals based on the input from the user.
+This project consists of four Python modules: `main.py`, `device.py`, `moisture.py`, and `rotation.py`. These modules are used to control a device that monitors moisture levels and rotates a motor at specified intervals based on the input from the user.
 
 ## Files
-* ´main.py´: This is the main entry point of the program. It initializes the device and starts the moisture monitoring and rotation processes.
-* 'device.py': This module contains the classes Microcontroller and LED_Strip, which handle the device's input/output and LED functionality, respectively.
-* 'moisture.py': This module contains the Moisture class, which handles the moisture sensor functionality and checks if the moisture level is too dry.
-* 'rotation.py': This module contains the Motor class, which handles the motor rotation functionality and determines when it is time to rotate.
+* `main.py`: This is the main entry point of the program. It initializes the device and starts the moisture monitoring and rotation processes.
+* `device.py`: This module contains the classes Microcontroller and LED_Strip, which handle the device`s input/output and LED functionality, respectively.
+* `moisture.py`: This module contains the Moisture class, which handles the moisture sensor functionality and checks if the moisture level is too dry.
+* `rotation.py`: This module contains the Motor class, which handles the motor rotation functionality and determines when it is time to rotate.
 
 
 ## Usage
 To use this code, follow these steps:
 
-1. Connect the necessary hardware components to your microcontroller according to the 'cable-colors.png'.
+1. Connect the necessary hardware components to your microcontroller according to the `cable-colors.png`.
 2. Upload the code to your microcontroller.
 3. Run the program and monitor the plant and controller.
 
@@ -30,7 +30,7 @@ This project requires the following dependencies:
 The behavior of the device can be configured through the following variables in the code:
 
 * **MINUTES**: The number of minutes in an hour.
-* **UPDATE_INTERVAL**: The time interval (in seconds) between each update of the device's state.
+* **UPDATE_INTERVAL**: The time interval (in seconds) between each update of the device`s state.
 
 
 The behavior of the LED strip can be configured through the following variables in the **LED_Strip** class:
