@@ -5,14 +5,14 @@ import _thread
 
 class Microcontroller:
     def __init__(self) -> None:
-        self.input_SIGINT = Pin(0, Pin.IN, Pin.PULL_DOWN)
+        self.input_reset = Pin(0, Pin.IN, Pin.PULL_DOWN)
         self.input_2wk = Pin(27, Pin.IN, Pin.PULL_DOWN)
         self.input_6wk = Pin(28, Pin.IN, Pin.PULL_DOWN)
         self.input_dry = Pin(22, Pin.IN, Pin.PULL_DOWN)
         self.input_wet = Pin(16, Pin.IN, Pin.PULL_DOWN)
 
-    def check_SIGINT(self) -> bool:
-        if self.input_SIGINT.value() == 1:
+    def check_reset(self) -> bool:
+        if self.input_reset.value() == 1:
             return True
         else: return False
     
