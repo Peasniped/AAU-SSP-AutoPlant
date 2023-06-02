@@ -325,9 +325,9 @@ class Startup:
         self.led = LED_Strip(25)
         self.io = Microcontroller()
         self.time = Time()
-        _thread.start_new_thread(self.startup_lights, ()) # Laver fancy lys imens systemet starter op
+        _thread.start_new_thread(self.startup_lights, ()) # Lyser når systemet starter op
         
-        for i in range(10): # Giver 4 sek under startup til at afbryde startup med SIGINT-knappen
+        for i in range(10): # Giver 4 sek under startup til at afbryde startup med reset-knappen
             print(f"Startup interrupt timer: {10-i:02d}")
             if self.io.check_SIGINT():
                 sleep_ms(200)
