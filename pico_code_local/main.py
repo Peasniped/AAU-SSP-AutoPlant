@@ -7,6 +7,7 @@ MINUTES = 60
 UPDATE_INTERVAL = 10 #* MINUTES
 
 if __name__ == "__main__":
+    """Main entry point of the script."""
     startup = device.Startup()
     print("Startup done")
     moisture = moisture.Moisture()

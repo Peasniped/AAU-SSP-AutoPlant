@@ -75,8 +75,6 @@ class Step_Motor(Motor):
         self.stepper_in3 = Pin(19, Pin.OUT)
         self.stepper_in4 = Pin(18, Pin.OUT)
 
-        self.position = self.read_position()
-
     def rotate(self) -> None:
         """
         Perform the rotation action.
@@ -129,20 +127,6 @@ class Step_Motor(Motor):
         if position > 6:
             position = 0
         self.position = position
-    
-    def read_position(self) -> int:
-        """
-        Read the current position of the motor.
-
-        This function retrieves the previously saved position of the motor.
-
-        Args:
-            None
-
-        Returns:
-            int: The current position of the motor.
-        """
-        return self.position
 
     def stepper_rotate(self, steps:int, time:float, direction:int = 1) -> None:
         """
