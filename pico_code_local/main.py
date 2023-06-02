@@ -4,7 +4,7 @@ import moisture
 import rotation
 
 MINUTES = 60
-UPDATE_INTERVAL = 10 #* MINUTES
+UPDATE_INTERVAL = 10 #*MINUTS 
 
 if __name__ == "__main__":
     """Main entry point of the script."""
