@@ -4,20 +4,20 @@ from neopixel import NeoPixel
 import _thread
 
 class Microcontroller:
-    """
-    Initialzes the Microcontroller object with relevant inputs.
-
-    Args:
-        self.input_reset : Button to restart product if.  
-        self.input_2wk : Sets the product to rotate every 2 weeks.
-        self.input_6wk : Sets the product to rotate every 6 weeks.
-        self.input_dry : Sets soil preference to dry.        
-        self.input_wet : Sets wet preference to wet.
-
-    Returns:
-        None.
-    """
     def __init__(self) -> None:
+        """
+        Initialzes the Microcontroller object with relevant inputs.
+
+        Args:
+            self.input_reset : Button to restart product if.  
+            self.input_2wk : Sets the product to rotate every 2 weeks.
+            self.input_6wk : Sets the product to rotate every 6 weeks.
+            self.input_dry : Sets soil preference to dry.        
+            self.input_wet : Sets wet preference to wet.
+
+        Returns:
+            None.
+        """
         self.input_reset = Pin(0, Pin.IN, Pin.PULL_DOWN)
         self.input_2wk = Pin(27, Pin.IN, Pin.PULL_DOWN)
         self.input_6wk = Pin(28, Pin.IN, Pin.PULL_DOWN)
@@ -258,21 +258,22 @@ class LED_Strip():
         self.led_off()        
 
 class Time:
-    """
-    Updates time.
-    """
     def rtc_fetch_unix_time(self) -> int:
-        """
-        Fetches current RTC time and converts to Unixtime to align with timezone.
-
+        """Fetches the current time from the RTC and converts it to Unix time.
+        
         Returns:
-            Variable of time
+            int: The current time in Unix time format.
         """
         time = localtime() # RTC-tid -> Starttidspunkt er 1/jan 2021 00:00:00
         time = mktime(time) # Omdannes til Unixtime
         return time
     
     def get_uptime(self):
+        """Calculates the system uptime in seconds since startup.
+        
+        Returns:
+            int: The number of seconds since system startup.
+        """ 
         time = self.rtc_fetch_unix_time()
         time -= 1609459200 # Omdan til sekunder siden opstart
         return time
@@ -280,10 +281,28 @@ class Time:
 
 class Stopwatch:
     def __init__(self) -> None:
+        """
+        Initializes a Stopwatch object.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         self.start_time = mktime(localtime())
         self.lap_times = []
     
     def get_time(self) -> int:
+        """
+        Calculates the elapsed time since the stopwatch was started.
+
+        Args:
+            None
+
+        Returns:
+            int: The elapsed time in seconds.
+        """
         start = self.start_time
         time = mktime(localtime())
         delta = time - start
@@ -292,6 +311,15 @@ class Stopwatch:
 
 class Startup:
     def __init__(self) -> None:
+        """
+        Initializes a Startup object.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         self.startup_done = False
         self.startup_aborted = False
         self.led = LED_Strip(25)
@@ -311,6 +339,15 @@ class Startup:
             sleep_ms(400)
          
     def startup_lights(self):
+        """
+        Performs a light display during system startup.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         self.led.led_rainbow_trail(seconds=5)    
 
 if __name__ == "__main__":
