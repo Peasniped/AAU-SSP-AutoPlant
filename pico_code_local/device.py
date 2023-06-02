@@ -258,10 +258,16 @@ class LED_Strip():
         self.led_off()        
 
 class Time:
-    def __init__(self) -> None:
-        pass
-
+    """
+    Updates time.
+    """
     def rtc_fetch_unix_time(self) -> int:
+        """
+        Fetches current RTC time and converts to Unixtime to align with timezone.
+
+        Returns:
+            Variable of time
+        """
         time = localtime() # RTC-tid -> Starttidspunkt er 1/jan 2021 00:00:00
         time = mktime(time) # Omdannes til Unixtime
         return time
