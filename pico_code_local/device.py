@@ -36,7 +36,16 @@ class Microcontroller:
 
 class LED_Strip():
     def __init__(self, led_brightness:int = 25) -> None:
+        """
+        Initialize an LED strip object.
 
+        Args:
+            led_brightness (int): Brightness level of the LED strip. Value between 1 and 100,
+                where 100 is the brightest and 1 is almost no light.
+
+        Returns:
+            None
+        """
         self.LED_PIXELS = 47
         self.LED_BRIGHTNESS = led_brightness # Sættes ved instantiering af objektet - Værdi mellem 1 og 100, hvor 100 er mest lys og 1 er næsten ingen lys
         self.led_strip = NeoPixel(Pin(17), self.LED_PIXELS)
@@ -48,6 +57,17 @@ class LED_Strip():
         self.blue = (0, 10, 255)
 
     def hue_to_rgb(self, angle:int) -> tuple:
+            """
+            Convert a hue angle to an RGB color.
+
+            This function converts a hue angle (0-360) to an RGB color tuple.
+
+            Args:
+                angle (int): Hue angle value.
+
+            Returns:
+                tuple: RGB color tuple.
+            """
             # Inspiration: Ontaelio(2016?) https://www.instructables.com/How-to-Make-Proper-Rainbow-and-Random-Colors-With-/
             if angle < 60:
                 red = 255; green = round(angle*4.25-0.01); blue = 0
@@ -64,6 +84,17 @@ class LED_Strip():
             return (red, green, blue)
 
     def led_on(self, color:tuple) -> None:
+        """
+        Turn on the LED strip with a specific color.
+
+        This function sets all the LEDs on the strip to the specified color.
+
+        Args:
+            color (tuple): RGB color tuple.
+
+        Returns:
+            None
+        """
         LED_R = int((color[0] / 100) * self.LED_BRIGHTNESS)
         LED_G = int((color[1] / 100) * self.LED_BRIGHTNESS)
         LED_B = int((color[2] / 100) * self.LED_BRIGHTNESS)
@@ -73,6 +104,19 @@ class LED_Strip():
         self.led_strip.write()
 
     def led_on_single(self, pixel:int, color:tuple, write:bool = True) -> None:
+        """
+        Turn on a single LED with a specific color.
+
+        This function sets a single LED on the strip to the specified color.
+
+        Args:
+            pixel (int): Index of the single LED pixel.
+            color (tuple): RGB color tuple.
+            write (bool): Whether to write the LED strip after setting the pixel color.
+
+        Returns:
+            None
+        """
         LED_R = int((color[0] / 100) * self.LED_BRIGHTNESS)
         LED_G = int((color[1] / 100) * self.LED_BRIGHTNESS)
         LED_B = int((color[2] / 100) * self.LED_BRIGHTNESS)
@@ -81,11 +125,38 @@ class LED_Strip():
         if write: self.led_strip.write()
 
     def led_off(self) -> None:
+        """
+        Turn off all the LEDs on the strip.
+
+        This function sets all the LEDs on the strip to off (black).
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
         for i in range(self.LED_PIXELS):
             self.led_strip[i] = (0, 0, 0)
         self.led_strip.write()
 
     def led_flash_double(self, flashes:int = 1, on_time_ms:int = 60, delay_time_ms:int = 75, off_time_ms:int = 1500, color:tuple = (0,0,0)) -> None:
+        """
+        Flash the LED strip with a double flash pattern.
+
+        This function flashes the LED strip with a double flash pattern,
+        using the specified parameters.
+
+        Args:
+            flashes (int): Number of flash cycles.
+            on_time_ms (int): Duration of each flash (in milliseconds).
+            delay_time_ms (int): Delay between the two flashes (in milliseconds).
+            off_time_ms (int): Delay between flash cycles (in milliseconds).
+            color (tuple): RGB color tuple to use for the flashes.
+
+        Returns:
+            None
+        """
         if color == (0,0,0):
             color = self.blue
         for i in range(flashes):
@@ -100,6 +171,21 @@ class LED_Strip():
                 sleep_ms(off_time_ms)
 
     def led_rainbow_trail(self, interval:int = 20, trail_length:int = 25, seconds:int = 0, colors:tuple = ("rainbow","rainbow","rainbow")) -> None:
+        """
+        Create a rainbow trail effect on the LED strip.
+
+        This function creates a rainbow trail effect on the LED strip,
+        using the specified parameters.
+
+        Args:
+            interval (int): Time interval between each LED update (in milliseconds).
+            trail_length (int): Number of LEDs in the trail.
+            seconds (int): Duration of the effect (in seconds). Set to 0 for an infinite effect.
+            colors (tuple): RGB color tuple(s) for the trail. Use "rainbow" for a rainbow trail.
+
+        Returns:
+            None
+        """
         stopwatch = Stopwatch()
         self.trail_stop = False
         angle = 1
